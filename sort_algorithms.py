@@ -5,9 +5,9 @@ The three sorting algorithms for my Computer Science Extended Essay.
 
   1. insertionSort  - simple sort, good for small arrays
   2. mergeSort       - divide-and-conquer sort, good for large arrays
-  3. hybridSort      - merge sort that switches to insertion sort
-                       once a part of the array is small enough
-                       (the "cutoff threshold")
+  3. hybridSort      - MISSING AT THE MOMENT
+                       (a merge sort that switches to insertion sort
+                       once a part of the array is small enough (the "cutoff threshold"))
 
 The research question is about how that cutoff threshold affects performance. 
 The other two are baselines to compare against.
@@ -104,45 +104,6 @@ def mergeSort(arr, left, right):
         merge(arr, left, mid, right)     # merge the two halves
 
 
-# ---------------------------------------------------------------------------
-# 3. HYBRID SORT  (the one the essay is really about)
-# ---------------------------------------------------------------------------
-def insertionSortRange(arr, left, right):
-    """Insertion sort, but only on the part arr[left..right].
-
-    This is the same idea as insertionSort above. The hybrid needs it
-    because it must sort small *parts* of the array, not the whole thing.
-    """
-    for i in range(left + 1, right + 1):
-        key = arr[i]
-        j = i - 1
-        while j >= left and key < arr[j]:
-            arr[j + 1] = arr[j]
-            j -= 1
-        arr[j + 1] = key
-
-
-def hybridSort(arr, left, right, threshold):
-    """Sort arr[left..right] using merge sort, but switch to insertion
-    sort when the part is small.
-
-    'threshold' is the size at or below which we stop splitting and use
-    insertion sort instead. Trying different thresholds is the whole
-    point of the experiment.
-    To sort a whole array, call hybridSort(arr, 0, len(arr) - 1, threshold).
-    """
-    # How many items are in this part of the array.
-    size = right - left + 1
-
-    if size <= threshold:
-        # Small part: insertion sort is usually faster here.
-        insertionSortRange(arr, left, right)
-    elif left < right:
-        # Bigger part: behave like normal merge sort.
-        mid = (left + right) // 2
-        hybridSort(arr, left, mid, threshold)
-        hybridSort(arr, mid + 1, right, threshold)
-        merge(arr, left, mid, right)
 
 
 # ---------------------------------------------------------------------------
@@ -184,9 +145,3 @@ if __name__ == "__main__":
     print("Merge sort:     ", end="")
     printArray(arr2)
     print("  correct?", arr2 == correct)
-
-    arr3 = original[:]
-    hybridSort(arr3, 0, len(arr3) - 1, threshold=3)
-    print("Hybrid sort:    ", end="")
-    printArray(arr3)
-    print("  correct?", arr3 == correct)
